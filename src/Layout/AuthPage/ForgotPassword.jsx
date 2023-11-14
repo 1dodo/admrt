@@ -1,79 +1,72 @@
-import React, {useState} from 'react'
-import {Icon} from 'react-icons-kit';
-import {eyeOff} from 'react-icons-kit/feather/eyeOff';
-import {eye} from 'react-icons-kit/feather/eye';
-import Checkbox from '@mui/material/Checkbox';
-import PasswordTwo from './PasswordTwo';
-
-const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { sendPasswordResetEmail } from 'firebase/auth';
+import { auth } from '../../firebase/firebase';
 
 const ForgotPassword = () => {
-    const [password, setPassword] = useState("");
-    const [type, setType] = useState('password');
-    const [icon, setIcon] = useState(eyeOff);
-   
-  const handleToggle = () => {
-    if (type==='password'){
-       setIcon(eye);
-       setType('text')
-    } else {
-       setIcon(eyeOff)
-       setType('password')
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleResetPassword = async () => {
+    try {
+      setEmailError('');
+      setSuccessMessage('');
+      setErrorMessage('');
+
+      if (!/\S+@\S+\.\S+/.test(email)) {
+        setEmailError('Invalid email address');
+        return;
+      }
+
+      await sendPasswordResetEmail(auth, email);
+      setSuccessMessage('Password reset email sent. Check your inbox for further instructions.');
+    } catch (error) {
+      console.error(error);
+      setErrorMessage('There was an error. Please check your email address and try again.');
     }
-  }
+  };
 
-    return (  
-     <div class="max-w-screen-2xl  mx-auto h-screen flex justify-center items-center">
-    <div class="w-full sm:w-full p-4 md:w-auto p-2 xl:w-3/5 lg:p-2">
-      <div>
-      <div>
-        <h1 class="justify-center font-normal text-3xl lg:text-5xl sm:text-3xl">Setup new one!</h1>
-         <p class=" text-base font-light mt-2.5 ">Please enter a new password.</p>
-      </div>
-    </div>
-    <div>
-      <div>
-      <label class="password-container block mt-8">
-          <h1 class="text-lg font-light md:font-normal">New Password</h1>
-            <div className='flex'>
-              <input className="mt-2.5 px-3 py-4 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-blue-600 block w-full rounded-xl focus:ring-1"  type={type} name="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password"  />
-              <h1 class="flex justify-around items-center" onClick={handleToggle}>
-                  <Icon class="absolute mr-14 mt-2" icon={icon} size={20}/>
-              </h1>
-              </div>
-        </label>
-    <div>
-      <div>
-      <label class="password-container block mt-8">
-          <h1 class="text-lg font-light md:font-normal">Confirm-New Password</h1>
-             <PasswordTwo/>
-        </label>
-      </div>
-      <div className='mt-8'>
-        <div className='flex'>
-         <Checkbox {...label} defaultChecked />
-         <div className='flex justify-center items-center' >
-         <h1 className='text-sm text-gray-500'>By clicking Create account, I agree that I have read and accepted the <a className='text-blue-800'>Terms of Use</a>  and <a className='text-blue-800'>Privacy Policy.</a></h1>
+  return (
+    <section className="max-w-screen-2xl mx-auto px-4 h-full justify-center items-center">
+      <div className="flex w-full h-full flex-col items-center justify-center mx-auto md:h-screen lg:py-0">
+        <div className="w-full bg-white max-w-2xl rounded-lg md:mt-0 sm:max-w-md xl:p-0">
+          <div>
+            <h1 className="mb-2 font-normal text-3xl lg:text-5xl sm:text-3xl">
+              Forgot Password
+            </h1>
+            <p className="mt-4 text-base font-light">Please enter the email address associated with your account</p>
+            <div className="mt-10 mb-4 ">
+              <h3 className="text-base font-medium">
+                Email Address
+              </h3>
+              <input
+                type="email"
+                name="email"
+                className={`mt-2.5 px-3 py-3 md:py-4 bg-white border shadow-sm border-slate-300 placeholder-slate-400 focus:outline-none focus:border-sky-500 focus:ring-blue-600 block w-full rounded-xl focus:ring-1 ${emailError ? 'border-red-500' : ''}`}
+                placeholder="example@gmail.com|"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <p className="text-red-500 text-sm mt-1">{emailError}</p>
+            </div>
+            <p className="font-light text-gray-500">We will send you a link to reset your password.</p>
+            <div className="mt-5 md:mt-12 social-card bg-blue-500 text-white google border rounded-xl py-2 text-center hover:border-blue-600  hover:shadow-md md:px-16">
+              <button onClick={handleResetPassword} className="text-center text-gray-800 font-normal py-1 md:py-2 px-4 rounded inline-flex items-center">
+                <span className="ml-1 md:ml-2 text-white">Continue</span>
+              </button>
+            </div>
+            {successMessage && <p className="text-green-500 my-4">{successMessage}</p>}
+            {errorMessage && <p className="text-red-500 my-4">{errorMessage}</p>}
+            <div className="my-4 text-center underline decoration-solid text-blue-600 cursor-pointer hover:text-blue-600">
+              <Link to={"/login"}>Back to Login</Link>
+            </div>
+          </div>
         </div>
-       </div>
-  
-    </div>
+      </div>
+    </section>
+  );
+};
 
-          <div class="mt-14 bg-blue-500 text-white border rounded-xl py-2 text-center hover:border-blue-600  hover:shadow-md">
-             <button class="text-center bg-blue-500 text-gray-800 font-normal py-2 px-4 rounded inline-flex items-center">
-             <h1 class="ml-1 text-sm md:ml-2 text-white">Create</h1>
-            </button>
-           </div>
-
-    </div>
-   </div>
-  </div>
-
-
-   </div>
-  </div>
-     
-    )
-}
-
-export default ForgotPassword
+export default ForgotPassword;

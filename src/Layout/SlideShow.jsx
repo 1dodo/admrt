@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
-import svg1 from './Group 1000005596 (2).svg'
+import svg1 from './AuthPage/images/Group 1000005596 (2).svg'
 
 // Import Swiper styles
 import 'swiper/css';

@@ -1,57 +1,33 @@
-/** @format */
-
-import { useState } from "react";
-import "./App.css";
-import Login from "./Layout/AuthPage/Login";
-import Home from "./Layout/Home/Home";
-import Navbar from "./Layout/Navbar/Navbar";
-import Register from "./Layout/AuthPage/Register";
-import CreateFolder from "./Layout/Modals/CreateFolder";
-import Header from "./Layout/Header/Header";
-import UploadFIleModal from "./Layout/Modals/UploadFIleModal";
+import React from "react";
 import { Route, Routes } from "react-router-dom";
-import Folder from "./Layout/Folder/Folder";
-import { auth } from "./api/firebase";
-import UserPage from "./Layout/UserPage/UserPage";
-import SlideShow from './Layout/SlideShow'
-import './Layout/style.css'
+import Login from "./Layout/AuthPage/Login";
+import Register from "./Layout/AuthPage/Register";
 import Continue from "./Layout/AuthPage/Continue";
 import CreateAnAcc from "./Layout/AuthPage/CreateAnAcc";
+import ConfirmPassword from "./Layout/AuthPage/ConfirmPassword";
+import CheckEmail from "./Layout/AuthPage/CheckEmail";
 import ForgotPassword from "./Layout/AuthPage/ForgotPassword";
+import Congratulation from "./Layout/AuthPage/Congratulation";
+import Main from "./components/Main";
+import './App.css'
 
 function App() {
-  // const [user, setUser] = useState(true);
-  const [visibleUploadModal, setVisibleUploadModal] = useState(false);
-  const [visibleCreateFolderModal, setVisibleCreateFolderModal] =
-  useState(false);
-  
-  let user = JSON.parse(localStorage.getItem("localUser"));
-  auth.onAuthStateChanged((el) => {
-    if (!user) {
-      localStorage.setItem("localUser", JSON.stringify(el));
-    }
-  });
   return (
- <div className="login-container min-h-screen md:flex">
-  <div className="md:w-1/2">
-    <SlideShow/>
+    <div>
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/continue" element={<Continue />} />
+          <Route path="/registasion" element={<CreateAnAcc />} />
+          <Route path="/forgotPassword" element={<ForgotPassword />} />
+          <Route path="/confirmPassword" element={<ConfirmPassword />} />
+          <Route path="/checkEmail" element={<CheckEmail />} />
+          <Route path="/congratulation" element={<Congratulation />} />
+
+          {/* user login qilib kirgandan keyin PrivateRoute bilan profilini ulash kerak! */}
+        </Routes>
     </div>
-    <div className="md:w-1/2 px-2 max-w-screen-2xl mx-auto h-full  md:block justify-center items-center">
-      <Routes>
-        <Route path='/' element={user ? <Home /> : <Login />} />
-        <Route path='/register' element={user ? <Home /> : <Register />} />
-        <Route path='/continue' element={user ? <Home /> : <Continue />} />
-        <Route path='/registasion' element={user ? <Home /> : <CreateAnAcc />} />
-        <Route path='/forgotPassword' element={user ? <Home /> : <ForgotPassword />} />
-        <Route path='/home' element={user ? <Home /> : <Login />} />
-        <Route path='/home/user/:id' element={user ? <UserPage /> : <Login />} />
-        <Route
-          path='/home/folder/:id'
-          element={user ? <Folder /> : <Login />}
-        />
-      </Routes>
-      </div>
-      </div>
   );
 }
 
